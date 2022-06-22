@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: monospace;
+            background-color: hsl(236deg 35% 17%);
+            ;
+        }
+
+        .container {
+            display: flex;
+            column-gap: 47px;
+            row-gap: 22px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .card {
+            width: 216px;
+            height: fit-content;
+            background-color: hsl(234deg 31% 25%);
+            min-width: 10px;
+            color: white;
+            position: relative;
+            overflow: hidden
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+
+        .info {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            justify-content: space-between;
+
+        }
+
+        .rating span {
+
+            background-color: hsl(236deg 35% 17%);
+            /* padding: 10px 10px 144px 10px; */
+            padding: 7px;
+        }
+
+        .description {
+            color: black;
+            background-color: white;
+            position: absolute;
+            /* text-align: center; */
+            padding: 7px;
+            width: 216px;
+            /* transform: translateY(-100%); */
+            transition: 0.5s;
+            box-sizing: border-box;
+        }
+
+        .description:hover {
+            transform: translateY(-100%);
+        }
+
+        img:hover~.description {
+            transform: translateY(-100%);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+
+    </header>
+    <div class="container">
+        <div class="card">
+            <img src="https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jrgifaYeUtTnaH7NF5Drkgjg2MB.jpg" alt="">
+            <div class="info">
+                <span>
+                    Demon Slayer: kimetsu no yaiba - the movie
+                </span>
+                <div class="rating">
+                    <span>8.4</span>
+                </div>
+
+            </div>
+            <div class="description">
+                <p>Overview</p>
+                <span>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum nisi totam ad maiores a veniam
+                    exercitationem corrupti. Fuga debitis rerum ipsum soluta odio, vitae quam? Quas assumenda laborum
+                    harum incidunt!
+                </span>
+            </div>
+        </div>
+    </div>
+    <script src="jayson.js"></script>
+    <script>
+        const container = document.querySelector(".container")
+        let html = ""
+
+        async function getMovies() {
+            return await fetch("https://api.themoviedb.org/3/discover/movie?api_key=8e4c78c6e6fc2df4b056587478315548&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_watch_monetization_types=flatrate")
+                .then(response => response.json())
+                .then(data => data.results);
+
+        }
+
+        function renderJson(jayson) {
+            console.log(jayson);
+            jayson.forEach(movie => {
+
+                html += `
+                <div class="card">
+                    <img src="https://www.themoviedb.org/t/p/w600_and_h900_bestv2${movie.poster_path}" alt="">
+                    <div class="info">
+                        <span>
+                            ${movie.title}
+                        </span>
+                        <div class="rating">
+                            <span>${movie.vote_average}</span>
+                        </div>
+
+                    </div>
+                    <div class="description">
+                        <p>Overview</p>
+                        <span>
+                            ${movie.overview}!
+                        </span>
+                    </div>
+                </div>
+            `;
+            });
+            container.innerHTML = html
+        }
+
+        async function startApp() {
+            renderJson(await getMovies())
+        }
+        startApp()
+    </script>
+</body>
+
+</html>
