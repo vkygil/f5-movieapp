@@ -70,12 +70,26 @@
         img:hover~.description {
             transform: translateY(-100%);
         }
+
+        /* nav */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            align-items: center;
+            padding: 0 25px;
+        }
     </style>
 </head>
 
 <body>
     <header>
-
+        <nav>
+            <h2>Movies</h2>
+            <div>
+                <input type="text" id="searchInput">
+            </div>
+        </nav>
     </header>
     <div class="container">
         <div class="card">
@@ -99,25 +113,39 @@
             </div>
         </div>
     </div>
-    <script src="jayson.js"></script>
+    <!-- <script src="jayson.js"></script> -->
     <script>
         const container = document.querySelector(".container")
-        let html = ""
+        const searchInput = document.querySelector("#searchInput")
+        let htmlAllMovies;
+
+        setInterval(async function () {
+            if (searchInput.value.length > 3) {
+                const html = generateHtml(await getMoviesBySearch(searchInput.value))
+                container.innerHTML = html
+
+            } else {
+                container.innerHTML = htmlAllMovies
+            }
+        }, 1000)
 
         async function getMovies() {
             return await fetch("https://api.themoviedb.org/3/discover/movie?api_key=8e4c78c6e6fc2df4b056587478315548&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_watch_monetization_types=flatrate")
                 .then(response => response.json())
                 .then(data => data.results);
-
+        }
+        async function getMoviesBySearch(query) {
+            return await fetch("https://api.themoviedb.org/3/search/movie?api_key=8e4c78c6e6fc2df4b056587478315548&query=" + query + "&page=1")
+                .then(response => response.json())
+                .then(data => data.results);
         }
 
-        function renderJson(jayson) {
-            console.log(jayson);
+        function generateHtml(jayson) {
+            let html = ""
             jayson.forEach(movie => {
-
                 html += `
                 <div class="card">
-                    <img src="https://www.themoviedb.org/t/p/w600_and_h900_bestv2${movie.poster_path}" alt="">
+                    <img src="https://image.tmdb.org/t/p/w500/${movie.poster_path}" alt="">
                     <div class="info">
                         <span>
                             ${movie.title}
@@ -136,11 +164,12 @@
                 </div>
             `;
             });
-            container.innerHTML = html
+            return html
         }
 
         async function startApp() {
-            renderJson(await getMovies())
+            let AllMovies = await getMovies()
+            htmlAllMovies = generateHtml(AllMovies)
         }
         startApp()
     </script>
