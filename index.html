@@ -89,6 +89,19 @@
             background-color: hsl(233deg 31% 27%);
             border: 2px solid #1c1e3b;
         }
+
+        /* colors rating */
+        .red {
+            color: #ff7a7a;
+        }
+
+        .yellow {
+            color: #f8ff67;
+        }
+
+        .green {
+            color: #7aff73;
+        }
     </style>
 </head>
 
@@ -154,6 +167,19 @@
                 .then(data => data.results);
         }
 
+        function getClass(n) {
+            switch (true) {
+                case (n < 5):
+                    return "red"
+                    break; 
+                case (n < 7):
+                    return "yellow"
+                    break; 
+                default:
+                    return "green" 
+            }
+        }
+
         function generateHtml(jayson) {
             let html = ""
             jayson.forEach(movie => {
@@ -165,7 +191,7 @@
                             ${movie.title}
                         </span>
                         <div class="rating">
-                            <span>${movie.vote_average}</span>
+                            <span class="${getClass(movie.vote_average)}">${movie.vote_average}</span>
                         </div>
 
                     </div>
